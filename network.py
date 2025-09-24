@@ -3,10 +3,11 @@ import os
 import random
 from typing import List, Tuple
 
+import matplotlib.pyplot as plt
+import mindspore as ms
+
 # 第三方库
 import numpy as np
-import mindspore as ms
-import matplotlib.pyplot as plt
 import tqdm
 from mindspore import ops
 
@@ -137,6 +138,7 @@ class Network(object):
         for b, w in zip(biases[:-1], weights[:-1]):
             # TODO 1: 补全前向传播过程
             # ...
+            pass
         w, b = weights[-1], biases[-1]
         z = ops.bmm(w.transpose(0, 2, 1), a) + b
         a = softmax(z)
@@ -230,6 +232,7 @@ class Network(object):
             # [bs, w, h] x [bs, h, l] -> [bs, w, l]
             # TODO 3: 补全前向传播计算过程
             # ...
+            pass
 
         # 输出层为 softmax 函数, 而不是采用 sigmoid
         activations[-1] = softmax(zs[-1])

@@ -1,10 +1,11 @@
 # 标准库
-import pickle
 import gzip
+import pickle
+
+import mindspore as ms
 
 # 第三方库
 import numpy as np
-import mindspore as ms
 from mindspore import ops
 
 

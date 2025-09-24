@@ -1,9 +1,11 @@
 import argparse
-import mnist_loader
-import network
-import os, sys
+import os
+import sys
 
 import mindspore as ms
+
+import mnist_loader
+import network
 
 
 def parse_args():
