@@ -137,8 +137,8 @@ class Network(object):
         ]
         for b, w in zip(biases[:-1], weights[:-1]):
             # TODO 1: 补全前向传播过程
-            # ...
-            pass
+            z = ops.bmm(w.transpose(0, 2, 1), a) + b
+            a = self.act(z)
         w, b = weights[-1], biases[-1]
         z = ops.bmm(w.transpose(0, 2, 1), a) + b
         a = softmax(z)
@@ -203,7 +203,10 @@ class Network(object):
         nabla_b = [ops.mean(nb, axis=0) for nb in nabla_b]
         nabla_w = [ops.mean(nw, axis=0) for nw in nabla_w]
         # TODO 2: 补全更新 weights 与 biases
-        # ...
+        for i in range(len(self.weights)):
+            coeff = 1 - lr * self.lambda_  # L2 regularization
+            self.weights[i] = coeff * self.weights[i] - lr * nabla_w[i]
+            self.biases[i] = self.biases[i] - lr * nabla_b[i]
 
     def backprop(self, x: ms.Tensor, y: ms.Tensor):
         """
@@ -231,8 +234,10 @@ class Network(object):
         for b, w in zip(biases, weights):
             # [bs, w, h] x [bs, h, l] -> [bs, w, l]
             # TODO 3: 补全前向传播计算过程
-            # ...
-            pass
+            z = ops.bmm(w.transpose(0, 2, 1), activation) + b
+            zs.append(z)
+            activation = self.act(z)
+            activations.append(activation)
 
         # 输出层为 softmax 函数, 而不是采用 sigmoid
         activations[-1] = softmax(zs[-1])
@@ -245,7 +250,11 @@ class Network(object):
         for l in range(2, self.num_layers):
             z = zs[-l]
             # TODO 4: 补全反向传播过程
-            # ...
+            sigma_prime = self.act_prime(z)
+            w_delta = ops.bmm(weights[-l + 1], delta)
+            delta = w_delta * sigma_prime
+            nabla_b[-l] = delta
+            nabla_w[-l] = ops.bmm(activations[-l - 1], delta.transpose(0, 2, 1))
         return (nabla_b, nabla_w)
 
     def accuracy(self, data, convert=False):
